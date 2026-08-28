@@ -1,6 +1,6 @@
 // cla4_dataflow.v
-// The same 4-bit CLA as cla4.v, rewritten using dataflow modeling
-// (continuous `assign` statements) instead of gate primitives. Compare
+// The same 4-bit cLa as cla4.v, rewritten using dataflow modeling
+// (continuous `assign` statements) instead of gate primitives. compare
 // the line count and readability of this file to cla4.v.
 //
 // TODO: add a delay to every assign statement (e.g. assign #(2) ...) --
@@ -24,6 +24,19 @@ module cla4_dataflow(
   wire [3:0] p, g;
   wire c1, c2, c3;
 
-  // TODO: your dataflow (assign) statements go here.
+     
+  assign #(2) g = a&b;
+  assign #(2) p = a^b; 
+
+  assign #(2) c1 = g[0]|(p[0]&cin);
+  assign #(2) c2 = g[1] | (p[1]&g[0]) | (p[1]&p[0]&cin);
+  assign #(2) c3 = g[2] | (p[2]&g[1]) | (p[2]&p[1]&g[0]) | (p[2]&p[1]&p[0]&cin);
+  assign #(2) cout = g[3] | (p[3]&g[2]) | (p[3]&p[2]&g[1]) | (p[3]&p[2]&p[1]&g[0]) | (p[3]&p[2]&p[1]&p[0]&cin);
+
+   
+  assign #(2) sum[0] = p[0]^cin;
+  assign #(2) sum[1] = p[1]^c1;
+  assign #(2) sum[2] = p[2]^c2;
+  assign #(2) sum[3] = p[3]^c3;
 
 endmodule
